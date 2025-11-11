@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Small Plates & Snacks Gallery</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  :root{--bg:#f9f9fb;--card:#fff;--txt:#222;--accent:#e67e22;}
+  body{font-family:system-ui,sans-serif;margin:0;background:var(--bg);color:var(--txt);padding:20px;}
+  h1{text-align:center;color:var(--accent);margin-bottom:.3rem;}
+  .subtitle{font-size:.9rem;text-align:center;color:#777;margin-bottom:1.5rem;}
+  #filters{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:1.5rem;}
+  #filters label{background:var(--card);padding:6px 12px;border-radius:20px;font-size:.85rem;
+                box-shadow:0 1px 3px rgba(0,0,0,.1);cursor:pointer;user-select:none;}
+  #filters input{margin-right:5px;}
+  #grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px;max-width:1400px;margin:auto;}
+  .item{position:relative;border-radius:10px;overflow:hidden;box-shadow:0 3px 8px rgba(0,0,0,.12);
+        background:var(--card);transition:transform .25s,box-shadow .25s;}
+  .item:hover{transform:translateY(-4px);box-shadow:0 10px 20px rgba(0,0,0,.18);}
+  .item img{width:100%;height:180px;object-fit:cover;display:block;}
+  .overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.8));
+            color:#fff;padding:20px 10px 10px;text-align:center;font-weight:600;opacity:0;transition:opacity .25s;}
+  .item:hover .overlay,.item.tapped .overlay{opacity:1;}
+  .missing{height:180px;display:flex;align-items:center;justify-content:center;color:#aaa;font-style:italic;}
+  @media(max-width:600px){
+    #grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;}
+    .item img{height:140px;}
+  }
+</style>
+</head>
+<body>
+
+<h1>Small Plates & Snacks</h1>
+<p class="subtitle">Hover (or tap) to see the name • Filter by tags</p>
+
+<div id="filters"></div>
+<div id="grid"></div>
+
+<!-- ---------------------------------------------------- -->
+<!-- 1. files.json – generated once (see script below)   -->
+<!-- ---------------------------------------------------- -->
+<script type="application/json" id="files-data">
+[
+  {"file":"Asian_Cucumber_Salad.jpg","tags":["vegan","raw","snack"]},
+  {"file":"Beet_and_Avocado_Salad.jpg","tags":["vegan","raw","snack"]},
+  {"file":"Cheeseburger_Spring_Rolls.jpg","tags":["snack"]},
+  {"file":"Chicken_and_Jalapeno_Fritters.jpg","tags":["snack"]},
+  {"file":"Chicken_Taquitos.jpg","tags":["snack"]},
+  {"file":"Crab_Wontons.jpg","tags":["snack"]},
+  {"file":"Crispy_Brussel_Sprouts.jpg","tags":["vegan","snack"]},
+  {"file":"Crispy_Crab_Bites.jpg","tags":["snack"]},
+  {"file":"Crispy_Fried_Cheese.jpg","tags":["snack"]},
+  {"file":"Fried_Zucchini.jpg","tags":["vegan","snack"]},
+  {"file":"Grilled_Asparagus.jpg","tags":["vegan","snack"]},
+  {"file":"Honey_Roasted_Carrots.jpg","tags":["vegan","snack"]},
+  {"file":"Korean_Fried_Cauliflower.jpg","tags":["vegan","snack"]},
+  {"file":"Little_House_Salad.jpg","tags":["vegan","raw","lunch"]},
+  {"file":"Street_Corn.jpg","tags":["vegan","snack"]},
+  {"file":"Stuffed_Mushrooms.jpg","tags":["vegan","snack"]}
+]
+</script>
+
+<script>
+/* ---------- CONFIG ---------- */
+const IMG_FOLDER = 'i/01_(16)_Small_Plates_and_Snacks/';
+/* ---------------------------- */
+
+const raw = document.getElementById('files-data').textContent;
+const data = JSON.parse(raw);
+
+/* ---- build tag list ---- */
+const tagSet = new Set();
+data.forEach(o=>o.tags.forEach(t=>tagSet.add(t)));
+const tags = Array.from(tagSet).sort();
+
+/* ---- create filter UI ---- */
+const filtersDiv = document.getElementById('filters');
+tags.forEach(t=>{
+  const lbl = document.createElement('label');
+  const cb  = document.createElement('input');
+  cb.type='checkbox'; cb.dataset.tag=t;
+  cb.addEventListener('change',render);
+  lbl.appendChild(cb);
+  lbl.appendChild(document.createTextNode(t.charAt(0).toUpperCase()+t.slice(1)));
+  filtersDiv.appendChild(lbl);
+});
+
+/* ---- render grid ---- */
+function render(){
+  const grid = document.getElementById('grid');
+  grid.innerHTML='';
+
+  const excluded = new Set();
+  filtersDiv.querySelectorAll('input:checked').forEach(c=>excluded.add(c.dataset.tag));
+
+  data.forEach(item=>{
+    if(item.tags.some(t=>excluded.has(t))) return;
+
+    const div = document.createElement('div');
+    div.className='item';
+
+    const img = new Image();
+    img.src = IMG_FOLDER + item.file;
+    img.alt = niceName(item.file);
+    img.onload  = ()=>div.appendChild(img);
+    img.onerror = ()=>{
+      const miss = document.createElement('div');
+      miss.className='missing';
+      miss.textContent='Image not found';
+      div.appendChild(miss);
+    };
+
+    const ov = document.createElement('div');
+    ov.className='overlay';
+    ov.textContent = niceName(item.file);
+    div.appendChild(ov);
+    grid.appendChild(div);
+  });
+
+  /* mobile tap toggle */
+  if(/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)){
+    document.querySelectorAll('.item').forEach(el=>el.addEventListener('click',e=>{
+      e.preventDefault(); el.classList.toggle('tapped');
+    }));
+  }
+}
+
+/* pretty name from filename */
+function niceName(fn){
+  return fn.replace(/\.[^.]+$/,'')           // drop extension
+           .replace(/_/g,' ')               // _ → space
+           .replace(/\b\w/g,c=>c.toUpperCase()); // Capitalize
+}
+
+/* initial render */
+render();
+</script>
+</body>
+</html>
