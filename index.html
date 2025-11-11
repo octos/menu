@@ -5,410 +5,233 @@
 <title>Menu Gallery</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-  :root{--bg:#fafafa;--txt:#fff;--accent:#e67e22;--sec:#2980b9;}
-  body{font-family:system-ui,sans-serif;margin:0;background:var(--bg);color:#222;padding:20px;}
-  h1{text-align:center;color:var(--accent);margin:1.5rem 0 .5rem;}
-  .section-title{font-size:1.4rem;color:var(--sec);text-align:center;margin:2rem 0 1rem;font-weight:600;}
-  .subtitle{font-size:.9rem;text-align:center;color:#777;margin-bottom:1.5rem;}
-  #filters{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:1.5rem 0;}
-  #filters label{background:#fff;padding:6px 12px;border-radius:20px;font-size:.85rem;
-                box-shadow:0 1px 3px rgba(0,0,0,.1);cursor:pointer;user-select:none;}
-  #filters input{margin-right:5px;}
-  .grid{
-    display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:0;
-    max-width:1400px;margin:auto;
+:root {
+  --bg: #fafafa;
+  --txt: #fff;
+  --accent: #e67e22;
+  --sec: #2980b9;
+}
+body {
+  font-family: system-ui, sans-serif;
+  margin: 0;
+  background: var(--bg);
+  color: #222;
+  padding: 20px;
+}
+h1 {
+  text-align: center;
+  color: var(--accent);
+  margin: 1.5rem 0 .5rem;
+}
+.section-title {
+  font-size: 1.4rem;
+  color: var(--sec);
+  text-align: center;
+  margin: 2rem 0 1rem;
+  font-weight: 600;
+}
+.subtitle {
+  font-size: .9rem;
+  text-align: center;
+  color: #777;
+  margin-bottom: 1.5rem;
+}
+#filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin: 1.5rem 0;
+}
+#filters label {
+  background: #fff;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: .85rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
+  cursor: pointer;
+  user-select: none;
+}
+#filters input {
+  margin-right: 5px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 0;
+  max-width: 1400px;
+  margin: auto;
+}
+.item {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 100%;
+  overflow: hidden;
+  background: #000;
+}
+.item img {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: filter 0.3s ease;
+}
+/* Blur image on hover/tap */
+.item:hover img,
+.item.tapped img {
+  filter: blur(6px) brightness(0.6);
+}
+/* Name: always visible at bottom with fade */
+.name {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  color: var(--txt);
+  padding: 30px 12px 12px;
+  font-weight: 600;
+  text-align: center;
+  font-size: .95rem;
+  line-height: 1.3;
+  z-index: 2;
+}
+/* Full description overlay on hover/tap */
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 25px;
+  color: var(--txt);
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 3;
+}
+.item:hover .overlay,
+.item.tapped .overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+.missing {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #aaa;
+  font-style: italic;
+  background: #111;
+}
+@media(max-width:600px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   }
-  .item{
-    position:relative;overflow:hidden;
-    /* Force perfect square */
-    width:100%;height:0;padding-bottom:100%;background:#000;
+  .name {
+    font-size: .9rem;
+    padding: 24px 10px 10px;
   }
-  .item img{
-    position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;
-  }
-  /* Name: always visible at bottom with fade */
-  .name{
-    position:absolute;bottom:0;left:0;right:0;
-    background:linear-gradient(transparent,rgba(0,0,0,0.7));
-    color:var(--txt);padding:30px 12px 12px;font-weight:600;
-    text-align:center;font-size:.95rem;line-height:1.3;
-  }
-  /* Full description overlay on hover/tap */
-  .overlay{
-    position:absolute;inset:0;background:rgba(0,0,0,.9);color:var(--txt);
-    padding:20px;display:flex;flex-direction:column;justify-content:center;
-    align-items:center;opacity:0;transition:opacity .3s;pointer-events:none;text-align:center;
-  }
-  .item:hover .overlay,
-  .item.tapped .overlay{opacity:1;pointer-events:auto;}
-  .missing{
-    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-    color:#aaa;font-style:italic;background:#111;
-  }
-  @media(max-width:600px){
-    .grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));}
-    .name{font-size:.9rem;padding:24px 10px 10px;}
-  }
+}
 </style>
 </head>
 <body>
-
 <h1>Restaurant Menu Gallery</h1>
 <p class="subtitle">Tap or hover for description • Filter by tags</p>
-
 <div id="filters"></div>
-
 <div class="section-title">Small Plates & Snacks</div>
 <div id="grid1" class="grid"></div>
-
 <div class="section-title">Appetizers</div>
 <div id="grid2" class="grid"></div>
-
-<!-- ===================================================== -->
-<!-- DATA: Edit "desc" and "tags" as needed                -->
-<!-- ===================================================== -->
-<script type="application/json" id="data">
-[
-  {
-    "section": "small",
-    "file": "Asian_Cucumber_Salad.jpg",
-    "tags": ["vegan","raw","snack"],
-    "desc": "Crisp cucumbers, sesame oil, rice vinegar, chili flakes."
-  },
-  {
-    "section": "small",
-    "file": "Beet_and_Avocado_Salad.jpg",
-    "tags": ["vegan","raw","snack"],
-    "desc": "Roasted beets, creamy avocado, lemon-tahini dressing."
-  },
-  {
-    "section": "small",
-    "file": "Cheeseburger_Spring_Rolls.jpg",
-    "tags": ["snack"],
-    "desc": "Mini cheeseburger filling wrapped in crispy spring-roll pastry."
-  },
-  {
-    "section": "small",
-    "file": "Chicken_and_Jalapeno_Fritters.jpg",
-    "tags": ["snack"],
-    "desc": "Spicy chicken & jalapeño bites, fried to golden perfection."
-  },
-  {
-    "section": "small",
-    "file": "Chicken_Taquitos.jpg",
-    "tags": ["snack"],
-    "desc": "Shredded chicken rolled in corn tortillas, fried crisp."
-  },
-  {
-    "section": "small",
-    "file": "Crab_Wontons.jpg",
-    "tags": ["snack"],
-    "desc": "Cream-cheese crab filling in crunchy wonton wrappers."
-  },
-  {
-    "section": "small",
-    "file": "Crispy_Brussel_Sprouts.jpg",
-    "tags": ["vegan","snack"],
-    "desc": "Flash-fried Brussels with balsamic glaze."
-  },
-  {
-    "section": "small",
-    "file": "Crispy_Crab_Bites.jpg",
-    "tags": ["snack"],
-    "desc": "Lump crab formed into bites, panko-crusted and fried."
-  },
-  {
-    "section": "small",
-    "file": "Crispy_Fried_Cheese.jpg",
-    "tags": ["snack"],
-    "desc": "Melted cheese sticks coated in seasoned breadcrumbs."
-  },
-  {
-    "section": "small",
-    "file": "Fried_Zucchini.jpg",
-    "tags": ["vegan","snack"],
-    "desc": "Zucchini strips battered and fried, served with marinara."
-  },
-  {
-    "section": "small",
-    "file": "Grilled_Asparagus.jpg",
-    "tags": ["vegan","snack"],
-    "desc": "Char-grilled asparagus with garlic and lemon zest."
-  },
-  {
-    "section": "small",
-    "file": "Honey_Roasted_Carrots.jpg",
-    "tags": ["vegan","snack"],
-    "desc": "Baby carrots roasted with honey and thyme."
-  },
-  {
-    "section": "small",
-    "file": "Korean_Fried_Cauliflower.jpg",
-    "tags": ["vegan","snack"],
-    "desc": "Cauliflower florets in gochujang glaze, double-fried."
-  },
-  {
-    "section": "small",
-    "file": "Little_House_Salad.jpg",
-    "tags": ["vegan","raw","lunch"],
-    "desc": "Mixed greens, cherry tomatoes, cucumber, house vinaigrette."
-  },
-  {
-    "section": "small",
-    "file": "Street_Corn.jpg",
-    "tags": ["vegan","snack"],
-    "desc": "Grilled corn on the cob with vegan mayo, cotija-style topping."
-  },
-  {
-    "section": "small",
-    "file": "Stuffed_Mushrooms.jpg",
-    "tags": ["vegan","snack"],
-    "desc": "Mushroom caps filled with herbed breadcrumb stuffing."
-  },
-
-  {
-    "section": "appetizer",
-    "file": "Ahi_Poke_Nachos.jpg",
-    "tags": ["appetizer","seafood"],
-    "desc": "Crispy wonton chips topped with ahi poke, avocado, and sriracha aioli."
-  },
-  {
-    "section": "appetizer",
-    "file": "Ahi_Tuna_&_Shrimp_Ceviche.jpg",
-    "tags": ["appetizer","seafood","raw"],
-    "desc": "Fresh ahi tuna and shrimp marinated in citrus with cucumber and cilantro."
-  },
-  {
-    "section": "appetizer",
-    "file": "Avocado_Eggrolls.jpg",
-    "tags": ["appetizer","vegan"],
-    "desc": "Avocado, sun-dried tomato, red onion, cilantro in crispy wrapper."
-  },
-  {
-    "section": "appetizer",
-    "file": "Buffalo_Blasts®.jpg",
-    "tags": ["appetizer","spicy"],
-    "desc": "Crispy chicken bites tossed in buffalo sauce, served with ranch."
-  },
-  {
-    "section": "appetizer",
-    "file": "Buffalo_Chicken_Strips.jpg",
-    "tags": ["appetizer","spicy"],
-    "desc": "Breaded chicken strips in buffalo sauce with celery and blue cheese."
-  },
-  {
-    "section": "appetizer",
-    "file": "Buffalo_Wings.jpg",
-    "tags": ["appetizer","spicy"],
-    "desc": "Classic bone-in wings tossed in buffalo sauce."
-  },
-  {
-    "section": "appetizer",
-    "file": "Chicken_Pot_Stickers.jpg",
-    "tags": ["appetizer"],
-    "desc": "Pan-seared dumplings filled with chicken and vegetables."
-  },
-  {
-    "section": "appetizer",
-    "file": "Eggroll_Sampler.jpg",
-    "tags": ["appetizer"],
-    "desc": "Assortment of avocado, tex-mex, and cheeseburger eggrolls."
-  },
-  {
-    "section": "appetizer",
-    "file": "Factory_Nachos.jpg",
-    "tags": ["appetizer"],
-    "desc": "Tortilla chips, melted cheese, beans, jalapeños, guacamole, sour cream."
-  },
-  {
-    "section": "appetizer",
-    "file": "Fried_Calamari.jpg",
-    "tags": ["appetizer","seafood"],
-    "desc": "Lightly breaded squid rings with marinara and spicy aioli."
-  },
-  {
-    "section": "appetizer",
-    "file": "Fried_Macaroni_and_Cheese.jpg",
-    "tags": ["appetizer"],
-    "desc": "Creamy mac & cheese balls, fried crisp with spicy tomato sauce."
-  },
-  {
-    "section": "appetizer",
-    "file": "Hot_Spinach_and_Cheese_Dip.jpg",
-    "tags": ["appetizer"],
-    "desc": "Spinach, artichoke, and cheese blend served with tortilla chips."
-  },
-  {
-    "section": "appetizer",
-    "file": "Pretzel_Bites_with_Cheddar_Cheese_Fondue.jpg",
-    "tags": ["appetizer"],
-    "desc": "Warm pretzel bites with creamy cheddar fondue."
-  },
-  {
-    "section": "appetizer",
-    "file": "Quesadilla.jpg",
-    "tags": ["appetizer"],
-    "desc": "Grilled flour tortilla with cheese, served with guac and sour cream."
-  },
-  {
-    "section": "appetizer",
-    "file": "Roadside_Sliders.jpg",
-    "tags": ["appetizer"],
-    "desc": "Mini burgers with grilled onions, pickles, and special sauce."
-  },
-  {
-    "section": "appetizer",
-    "file": "Small_Thai_Lettuce_Wraps_with_Avocado.jpg",
-    "tags": ["appetizer","vegan"],
-    "desc": "Coconut curry noodles, avocado, veggies in lettuce cups."
-  },
-  {
-    "section": "appetizer",
-    "file": "Small_Thai_Lettuce_Wraps_with_Chicken.jpg",
-    "tags": ["appetizer"],
-    "desc": "Same as above with grilled chicken."
-  },
-  {
-    "section": "appetizer",
-    "file": "Soup_of_the_Day.jpg",
-    "tags": ["appetizer"],
-    "desc": "Ask your server for today’s fresh soup selection."
-  },
-  {
-    "section": "appetizer",
-    "file": "Spicy_Tuna.jpg",
-    "tags": ["appetizer","seafood","spicy"],
-    "desc": "Spicy tuna on crispy rice cakes with avocado."
-  },
-  {
-    "section": "appetizer",
-    "file": "Sweet_Corn_Tamale_Cakes.jpg",
-    "tags": ["appetizer"],
-    "desc": "Sweet corn cakes with southwestern sauce and avocado."
-  },
-  {
-    "section": "appetizer",
-    "file": "Tex_Mex_Eggrolls.jpg",
-    "tags": ["appetizer","spicy"],
-    "desc": "Chicken, corn, black beans, peppers, cheese in crispy wrapper."
-  },
-  {
-    "section": "appetizer",
-    "file": "Thai_Chili_Shrimp.jpg",
-    "tags": ["appetizer","seafood","spicy"],
-    "desc": "Crispy shrimp tossed in sweet and spicy Thai chili sauce."
-  },
-  {
-    "section": "appetizer",
-    "file": "Thai_Lettuce_Wraps_with_Avocado.jpg",
-    "tags": ["appetizer","vegan"],
-    "desc": "Full-size version of the small wraps with avocado."
-  },
-  {
-    "section": "appetizer",
-    "file": "Thai_Lettuce_Wraps_with Paradiso.jpg",
-    "tags": ["appetizer"],
-    "desc": "Full-size version with grilled chicken."
-  },
-  {
-    "section": "appetizer",
-    "file": "Warm_Crab_Dip.jpg",
-    "tags": ["appetizer","seafood"],
-    "desc": "Lump crab, cream cheese, artichoke, served warm with bread."
-  }
-]
-</script>
-
 <script>
+// Folders for images
 const IMG_FOLDERS = {
   small: 'i/01_(16)_Small_Plates_and_Snacks/',
   appetizer: 'i/02_(25)_Appetizers/'
 };
 
-const raw = document.getElementById('data').textContent;
-const data = JSON.parse(raw);
+fetch('menu.json')
+  .then(r => r.json())
+  .then(data => {
+    // --- collect tags ---
+    const tagSet = new Set();
+    data.forEach(o => o.tags.forEach(t => tagSet.add(t)));
+    const tags = Array.from(tagSet).sort();
 
-/* ---- collect all tags ---- */
-const tagSet = new Set();
-data.forEach(o => o.tags.forEach(t => tagSet.add(t)));
-const tags = Array.from(tagSet).sort();
-
-/* ---- build filters ---- */
-const filtersDiv = document.getElementById('filters');
-tags.forEach(t => {
-  const lbl = document.createElement('label');
-  const cb = document.createElement('input');
-  cb.type = 'checkbox'; cb.dataset.tag = t;
-  cb.addEventListener('change', render);
-  lbl.appendChild(cb);
-  lbl.appendChild(document.createTextNode(t.charAt(0).toUpperCase() + t.slice(1)));
-  filtersDiv.appendChild(lbl);
-});
-
-/* ---- render both grids ---- */
-function render() {
-  const excluded = new Set();
-  filtersDiv.querySelectorAll('input:checked').forEach(c => excluded.add(c.dataset.tag));
-
-  renderGrid('grid1', 'small');
-  renderGrid('grid2', 'appetizer');
-
-  function renderGrid(gridId, section) {
-    const grid = document.getElementById(gridId);
-    grid.innerHTML = '';
-    const items = data.filter(o => o.section === section && !o.tags.some(t => excluded.has(t)));
-
-    items.forEach(item => {
-      const div = document.createElement('div');
-      div.className = 'item';
-
-      const img = new Image();
-      img.src = IMG_FOLDERS[section] + item.file;
-      img.alt = prettyName(item.file);
-      img.onload = () => div.appendChild(img);
-      img.onerror = () => {
-        const miss = document.createElement('div');
-        miss.className = 'missing';
-        miss.textContent = 'Image missing';
-        div.appendChild(miss);
-      };
-
-      const name = document.createElement('div');
-      name.className = 'name';
-      name.textContent = prettyName(item.file);
-
-      const overlay = document.createElement('div');
-      overlay.className = 'overlay';
-      overlay.innerHTML = `<strong>${prettyName(item.file)}</strong><br><br>${item.desc}`;
-
-      div.appendChild(name);
-      div.appendChild(overlay);
-      grid.appendChild(div);
+    // --- build filters ---
+    const filtersDiv = document.getElementById('filters');
+    tags.forEach(t => {
+      const lbl = document.createElement('label');
+      const cb = document.createElement('input');
+      cb.type = 'checkbox'; cb.dataset.tag = t;
+      cb.addEventListener('change', render);
+      lbl.appendChild(cb);
+      lbl.appendChild(document.createTextNode(t.charAt(0).toUpperCase() + t.slice(1)));
+      filtersDiv.appendChild(lbl);
     });
-  }
 
-  /* mobile tap */
-  if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-    document.querySelectorAll('.item').forEach(el => el.addEventListener('click', e => {
-      e.preventDefault(); el.classList.toggle('tapped');
-    }));
-  }
-}
+    // ---- render both grids ----
+    function render() {
+      const excluded = new Set();
+      filtersDiv.querySelectorAll('input:checked').forEach(c => excluded.add(c.dataset.tag));
+      renderGrid('grid1', 'small');
+      renderGrid('grid2', 'appetizer');
 
-/* ---- smart title case ---- */
-function prettyName(fn) {
-  const small = /^(and|with|of|the|in|on|at|for|a|an|&)$/i;
-  return fn.replace(/\.[^.]+$/, '')
-           .replace(/_/g, ' ')
-           .split(' ')
-           .map((w, i) => i === 0 || !small.test(w) ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()
-                                                  : w.toLowerCase())
-           .join(' ')
-           .replace(/&/g, '&');
-}
+      function renderGrid(gridId, section) {
+        const grid = document.getElementById(gridId);
+        grid.innerHTML = '';
+        const items = data.filter(o => o.section === section && !o.tags.some(t => excluded.has(t)));
 
-/* initial render */
-render();
+        items.forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'item';
+          const img = new Image();
+          img.src = IMG_FOLDERS[section] + item.file;
+          img.alt = prettyName(item.file);
+          img.onload = () => div.appendChild(img);
+          img.onerror = () => {
+            const miss = document.createElement('div');
+            miss.className = 'missing';
+            miss.textContent = 'Image missing';
+            div.appendChild(miss);
+          };
+          const name = document.createElement('div');
+          name.className = 'name';
+          name.textContent = prettyName(item.file);
+          const overlay = document.createElement('div');
+          overlay.className = 'overlay';
+          overlay.innerHTML = `<div><strong>${prettyName(item.file)}</strong><br><br>${item.desc}</div>`;
+          div.appendChild(name);
+          div.appendChild(overlay);
+          grid.appendChild(div);
+        });
+      }
+      // mobile tap
+      if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        document.querySelectorAll('.item').forEach(el =>
+          el.addEventListener('click', e => {
+            e.preventDefault(); el.classList.toggle('tapped');
+          })
+        );
+      }
+    }
+
+    // smart title case
+    function prettyName(fn) {
+      const small = /^(and|with|of|the|in|on|at|for|a|an|&)$/i;
+      return fn.replace(/\.[^.]+$/, '')
+        .replace(/_/g, ' ')
+        .split(' ')
+        .map((w, i) =>
+          i === 0 || !small.test(w) ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()
+            : w.toLowerCase())
+        .join(' ')
+        .replace(/&/g, '&');
+    }
+
+    render();
+  });
 </script>
 </body>
 </html>
