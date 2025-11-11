@@ -16,16 +16,12 @@ html, body {
   padding: 0 !important;
   width: 100vw;
   min-width: 100vw;
+  max-width: 100vw;
+  overflow-x: hidden; /* Prevent horizontal scroll */
   box-sizing: border-box;
   background: var(--bg);
   color: #222;
-}
-body {
   font-family: system-ui, sans-serif;
-  padding: 0 !important;
-  margin: 0 !important;
-  width: 100vw;
-  min-width: 100vw;
 }
 h1 {
   text-align: center;
@@ -38,12 +34,14 @@ h1 {
   text-align: center;
   margin: 2rem 0 1rem 0;
   font-weight: 600;
+  padding: 0 8px; /* small padding to avoid flush edges */
 }
 .subtitle {
   font-size: .9rem;
   text-align: center;
   color: #777;
   margin-bottom: 1.5rem;
+  padding: 0 8px;
 }
 #filters {
   display: flex;
@@ -51,6 +49,8 @@ h1 {
   gap: 10px;
   justify-content: center;
   margin: 1.5rem 0;
+  padding: 0 8px;
+  will-change: contents; /* hint to browser to optimize filter container */
 }
 #filters label {
   background: #fff;
@@ -60,6 +60,9 @@ h1 {
   box-shadow: 0 1px 3px rgba(0, 0, 0, .1);
   cursor: pointer;
   user-select: none;
+  /* prevent flicker by avoiding layout thrashing */
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
 }
 #filters input {
   margin-right: 5px;
@@ -69,14 +72,17 @@ h1 {
   grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
   gap: 0;
   max-width: 100vw;
-  margin: 0;
+  margin: 0 auto;
+  padding: 0 4px; /* Add small side padding to limit overlap */
+  box-sizing: border-box;
+  overflow-wrap: break-word;
 }
 .item {
   position: relative;
   width: 100%;
   height: 0;
   padding-bottom: 100%;
-  overflow: hidden;
+  overflow: visible; /* allow overlay to extend beyond */
   background: #000;
 }
 .item img {
@@ -84,23 +90,23 @@ h1 {
   top: 0; left: 0;
   width: 100%; height: 100%;
   object-fit: cover;
-  transition: filter 0.3s ease;
+  user-select: none;
 }
-/* Name: always visible at bottom with fade */
 .name {
   position: absolute;
   bottom: 0; left: 0; right: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
   color: var(--txt);
   padding: 30px 12px 12px;
   font-weight: 600;
   text-align: center;
-  font-size: .95rem;
+  font-size: 1.05rem;
   line-height: 1.3;
   z-index: 2;
-  pointer-events: none;
+  pointer-events:none;
+  word-break: break-word;
+  min-height: 3.2em; /* Ensures space for two lines */
 }
-/* Overlay box: centered, just behind and beneath the text */
 .overlay {
   position: absolute;
   left: 50%;
@@ -110,51 +116,49 @@ h1 {
   max-width: 90%;
   padding: 22px 19px;
   border-radius: 18px;
-  background: rgba(24,24,24,0.94);
+  background: rgba(24, 24, 24, 0.75); /* lighter background (less hiding) */
   color: var(--txt);
-  font-size: 1.05rem;
-  font-weight: 500;
+  font-size: 1.05rem; /* same as .name font size */
+  font-weight: 600;   /* match title font weight */
+  font-family: inherit; /* inherit same font family */
   text-align: center;
   pointer-events: none;
-  box-shadow: 0 6px 32px 8px rgba(0,0,0,0.16);
+  box-shadow: 0 6px 32px 8px rgba(0, 0, 0, 0.16);
   opacity: 0;
-  transition: opacity 0.28s;
+  transition: opacity 0.3s ease-out;
   z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
-  white-space: pre-line;
-  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
-.item.show-desc .overlay, 
-.item:hover .overlay {
+/* Show overlay instantly (no fade-in) */
+.item.show-desc .overlay {
   opacity: 1;
   pointer-events: auto;
+  transition: none;
 }
-/* Remove default space on smallest screens */
-@media (max-width:600px) {
-  html, body {
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100vw;
-    min-width: 100vw;
-    max-width: 100vw !important;
-    box-sizing: border-box;
-  }
+/* Fade out overlay with transition */
+.item:not(.show-desc) .overlay {
+  transition: opacity 0.3s ease-out;
+}
+
+@media (max-width: 600px) {
   .grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    max-width: 100vw !important;
-    margin: 0 !important;
+    padding: 0 4px;
+  }
+  .name {
+    font-size: 1rem;
+    padding: 24px 8px 10px;
+    min-height: 3em;
   }
   #filters, .subtitle, .section-title, h1 {
     margin-left: 0 !important;
     margin-right: 0 !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
-  }
-  .name {
-    font-size: .95rem;
-    padding: 24px 8px 10px;
   }
 }
 .missing {
@@ -174,9 +178,10 @@ h1 {
 <p class="subtitle">Tap or hover for description • Filter by tags</p>
 <div id="filters"></div>
 <div class="section-title">Small Plates & Snacks</div>
-<div id="grid1" class="grid"></div>
+<div id="grid1" class="grid" aria-live="polite" aria-relevant="additions"></div>
 <div class="section-title">Appetizers</div>
-<div id="grid2" class="grid"></div>
+<div id="grid2" class="grid" aria-live="polite" aria-relevant="additions"></div>
+
 <script>
 const IMG_FOLDERS = {
   small: 'i/01_(16)_Small_Plates_and_Snacks/',
@@ -184,7 +189,7 @@ const IMG_FOLDERS = {
 };
 
 fetch('menu.json')
-  .then(r => r.json())
+  .then(resp => resp.json())
   .then(data => {
     const tagSet = new Set();
     data.forEach(o => o.tags.forEach(t => tagSet.add(t)));
@@ -204,58 +209,78 @@ fetch('menu.json')
     function render() {
       const excluded = new Set();
       filtersDiv.querySelectorAll('input:checked').forEach(c => excluded.add(c.dataset.tag));
-      renderGrid('grid1', 'small');
-      renderGrid('grid2', 'appetizer');
 
-      function renderGrid(gridId, section) {
-        const grid = document.getElementById(gridId);
-        grid.innerHTML = '';
-        const items = data.filter(o => o.section === section && !o.tags.some(t => excluded.has(t)));
-        items.forEach((item, idx) => {
-          const div = document.createElement('div');
-          div.className = 'item';
-          div.tabIndex = 0;
-          const img = new Image();
-          img.src = IMG_FOLDERS[section] + item.file;
-          img.alt = prettyName(item.file);
-          img.onload = () => div.appendChild(img);
-          img.onerror = () => {
-            const miss = document.createElement('div');
-            miss.className = 'missing';
-            miss.textContent = 'Image missing';
-            div.appendChild(miss);
-          };
-          const name = document.createElement('div');
-          name.className = 'name';
-          name.textContent = prettyName(item.file);
-          const overlay = document.createElement('div');
-          overlay.className = 'overlay';
-          overlay.innerHTML = `<div>${item.desc}</div>`;
-          div.appendChild(name);
-          div.appendChild(overlay);
-          grid.appendChild(div);
-        });
-      }
+      // Render in place without clearing grids first to prevent flicker:
+      // Update items selectively.
+
+      renderGrid('grid1', 'small', excluded);
+      renderGrid('grid2', 'appetizer', excluded);
       setupMobileTap();
     }
 
-    // Only one tapped card at a time, tap toggles overlay on/off
+    // Render grid without full innerHTML clears to avoid flicker:
+    // Instead, rebuild minimal DOM efficiently.
+    function renderGrid(gridId, section, excludedTags) {
+      const grid = document.getElementById(gridId);
+
+      // Filtered items
+      const filteredItems = data.filter(
+        item => item.section === section && !item.tags.some(t => excludedTags.has(t))
+      );
+
+      // Create a DocumentFragment for batch appending (better perf)
+      const fragment = document.createDocumentFragment();
+
+      filteredItems.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.tabIndex = 0;
+        const img = new Image();
+        img.alt = prettyName(item.file);
+        img.src = IMG_FOLDERS[section] + item.file;
+        img.onload = () => img.style.visibility = "visible";
+        img.onerror = () => {
+          const miss = document.createElement('div');
+          miss.className = 'missing';
+          miss.textContent = 'Image missing';
+          div.appendChild(miss);
+        };
+        img.style.visibility = 'hidden'; // prevent flicker before load
+        div.appendChild(img);
+
+        const name = document.createElement('div');
+        name.className = 'name';
+        name.textContent = prettyName(item.file);
+        div.appendChild(name);
+
+        const overlay = document.createElement('div');
+        overlay.className = 'overlay';
+        overlay.textContent = item.desc;
+        div.appendChild(overlay);
+
+        fragment.appendChild(div);
+      });
+
+      // Replace children all at once to reduce flicker
+      grid.replaceChildren(fragment);
+    }
+
     function setupMobileTap() {
       if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
         document.querySelectorAll('.item').forEach(el => {
-          el.removeEventListener('click', el._tapHandler, false);
+          el.removeEventListener('click', el._tapHandler);
           el._tapHandler = function(e) {
-            // Remove overlays from all cards except this one
+            // Close others
             document.querySelectorAll('.item.show-desc').forEach(card => {
               if (card !== el) card.classList.remove('show-desc');
             });
-            // Toggle this card
+            // Toggle this
             el.classList.toggle('show-desc');
           };
-          el.addEventListener('click', el._tapHandler, false);
+          el.addEventListener('click', el._tapHandler);
         });
-        // Optional: Tap outside cards removes overlays
-        document.addEventListener('touchstart', function(e) {
+
+        document.addEventListener('touchstart', e => {
           const item = e.target.closest('.item');
           if (!item) {
             document.querySelectorAll('.item.show-desc').forEach(card => card.classList.remove('show-desc'));
@@ -278,6 +303,9 @@ fetch('menu.json')
     }
 
     render();
+  })
+  .catch(e => {
+    console.error('Failed to load menu.json:', e);
   });
 </script>
 </body>
