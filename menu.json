@@ -1,0 +1,249 @@
+[
+  {
+    "section": "small",
+    "file": "Asian_Cucumber_Salad.jpg",
+    "tags": ["vegan","raw","snack"],
+    "desc": "Crisp cucumbers, sesame oil, rice vinegar, chili flakes."
+  },
+  {
+    "section": "small",
+    "file": "Beet_and_Avocado_Salad.jpg",
+    "tags": ["vegan","raw","snack"],
+    "desc": "Roasted beets, creamy avocado, lemon-tahini dressing."
+  },
+  {
+    "section": "small",
+    "file": "Cheeseburger_Spring_Rolls.jpg",
+    "tags": ["snack"],
+    "desc": "Mini cheeseburger filling wrapped in crispy spring-roll pastry."
+  },
+  {
+    "section": "small",
+    "file": "Chicken_and_Jalapeno_Fritters.jpg",
+    "tags": ["snack"],
+    "desc": "Spicy chicken & jalapeño bites, fried to golden perfection."
+  },
+  {
+    "section": "small",
+    "file": "Chicken_Taquitos.jpg",
+    "tags": ["snack"],
+    "desc": "Shredded chicken rolled in corn tortillas, fried crisp."
+  },
+  {
+    "section": "small",
+    "file": "Crab_Wontons.jpg",
+    "tags": ["snack"],
+    "desc": "Cream-cheese crab filling in crunchy wonton wrappers."
+  },
+  {
+    "section": "small",
+    "file": "Crispy_Brussel_Sprouts.jpg",
+    "tags": ["vegan","snack"],
+    "desc": "Flash-fried Brussels with balsamic glaze."
+  },
+  {
+    "section": "small",
+    "file": "Crispy_Crab_Bites.jpg",
+    "tags": ["snack"],
+    "desc": "Lump crab formed into bites, panko-crusted and fried."
+  },
+  {
+    "section": "small",
+    "file": "Crispy_Fried_Cheese.jpg",
+    "tags": ["snack"],
+    "desc": "Melted cheese sticks coated in seasoned breadcrumbs."
+  },
+  {
+    "section": "small",
+    "file": "Fried_Zucchini.jpg",
+    "tags": ["vegan","snack"],
+    "desc": "Zucchini strips battered and fried, served with marinara."
+  },
+  {
+    "section": "small",
+    "file": "Grilled_Asparagus.jpg",
+    "tags": ["vegan","snack"],
+    "desc": "Char-grilled asparagus with garlic and lemon zest."
+  },
+  {
+    "section": "small",
+    "file": "Honey_Roasted_Carrots.jpg",
+    "tags": ["vegan","snack"],
+    "desc": "Baby carrots roasted with honey and thyme."
+  },
+  {
+    "section": "small",
+    "file": "Korean_Fried_Cauliflower.jpg",
+    "tags": ["vegan","snack"],
+    "desc": "Cauliflower florets in gochujang glaze, double-fried."
+  },
+  {
+    "section": "small",
+    "file": "Little_House_Salad.jpg",
+    "tags": ["vegan","raw","lunch"],
+    "desc": "Mixed greens, cherry tomatoes, cucumber, house vinaigrette."
+  },
+  {
+    "section": "small",
+    "file": "Street_Corn.jpg",
+    "tags": ["vegan","snack"],
+    "desc": "Grilled corn on the cob with vegan mayo, cotija-style topping."
+  },
+  {
+    "section": "small",
+    "file": "Stuffed_Mushrooms.jpg",
+    "tags": ["vegan","snack"],
+    "desc": "Mushroom caps filled with herbed breadcrumb stuffing."
+  },
+
+  {
+    "section": "appetizer",
+    "file": "Ahi_Poke_Nachos.jpg",
+    "tags": ["appetizer","seafood"],
+    "desc": "Crispy wonton chips topped with ahi poke, avocado, and sriracha aioli."
+  },
+  {
+    "section": "appetizer",
+    "file": "Ahi_Tuna_&_Shrimp_Ceviche.jpg",
+    "tags": ["appetizer","seafood","raw"],
+    "desc": "Fresh ahi tuna and shrimp marinated in citrus with cucumber and cilantro."
+  },
+  {
+    "section": "appetizer",
+    "file": "Avocado_Eggrolls.jpg",
+    "tags": ["appetizer","vegan"],
+    "desc": "Avocado, sun-dried tomato, red onion, cilantro in crispy wrapper."
+  },
+  {
+    "section": "appetizer",
+    "file": "Buffalo_Blasts®.jpg",
+    "tags": ["appetizer","spicy"],
+    "desc": "Crispy chicken bites tossed in buffalo sauce, served with ranch."
+  },
+  {
+    "section": "appetizer",
+    "file": "Buffalo_Chicken_Strips.jpg",
+    "tags": ["appetizer","spicy"],
+    "desc": "Breaded chicken strips in buffalo sauce with celery and blue cheese."
+  },
+  {
+    "section": "appetizer",
+    "file": "Buffalo_Wings.jpg",
+    "tags": ["appetizer","spicy"],
+    "desc": "Classic bone-in wings tossed in buffalo sauce."
+  },
+  {
+    "section": "appetizer",
+    "file": "Chicken_Pot_Stickers.jpg",
+    "tags": ["appetizer"],
+    "desc": "Pan-seared dumplings filled with chicken and vegetables."
+  },
+  {
+    "section": "appetizer",
+    "file": "Eggroll_Sampler.jpg",
+    "tags": ["appetizer"],
+    "desc": "Assortment of avocado, tex-mex, and cheeseburger eggrolls."
+  },
+  {
+    "section": "appetizer",
+    "file": "Factory_Nachos.jpg",
+    "tags": ["appetizer"],
+    "desc": "Tortilla chips, melted cheese, beans, jalapeños, guacamole, sour cream."
+  },
+  {
+    "section": "appetizer",
+    "file": "Fried_Calamari.jpg",
+    "tags": ["appetizer","seafood"],
+    "desc": "Lightly breaded squid rings with marinara and spicy aioli."
+  },
+  {
+    "section": "appetizer",
+    "file": "Fried_Macaroni_and_Cheese.jpg",
+    "tags": ["appetizer"],
+    "desc": "Creamy mac & cheese balls, fried crisp with spicy tomato sauce."
+  },
+  {
+    "section": "appetizer",
+    "file": "Hot_Spinach_and_Cheese_Dip.jpg",
+    "tags": ["appetizer"],
+    "desc": "Spinach, artichoke, and cheese blend served with tortilla chips."
+  },
+  {
+    "section": "appetizer",
+    "file": "Pretzel_Bites_with_Cheddar_Cheese_Fondue.jpg",
+    "tags": ["appetizer"],
+    "desc": "Warm pretzel bites with creamy cheddar fondue."
+  },
+  {
+    "section": "appetizer",
+    "file": "Quesadilla.jpg",
+    "tags": ["appetizer"],
+    "desc": "Grilled flour tortilla with cheese, served with guac and sour cream."
+  },
+  {
+    "section": "appetizer",
+    "file": "Roadside_Sliders.jpg",
+    "tags": ["appetizer"],
+    "desc": "Mini burgers with grilled onions, pickles, and special sauce."
+  },
+  {
+    "section": "appetizer",
+    "file": "Small_Thai_Lettuce_Wraps_with_Avocado.jpg",
+    "tags": ["appetizer","vegan"],
+    "desc": "Coconut curry noodles, avocado, veggies in lettuce cups."
+  },
+  {
+    "section": "appetizer",
+    "file": "Small_Thai_Lettuce_Wraps_with_Chicken.jpg",
+    "tags": ["appetizer"],
+    "desc": "Same as above with grilled chicken."
+  },
+  {
+    "section": "appetizer",
+    "file": "Soup_of_the_Day.jpg",
+    "tags": ["appetizer"],
+    "desc": "Ask your server for today’s fresh soup selection."
+  },
+  {
+    "section": "appetizer",
+    "file": "Spicy_Tuna.jpg",
+    "tags": ["appetizer","seafood","spicy"],
+    "desc": "Spicy tuna on crispy rice cakes with avocado."
+  },
+  {
+    "section": "appetizer",
+    "file": "Sweet_Corn_Tamale_Cakes.jpg",
+    "tags": ["appetizer"],
+    "desc": "Sweet corn cakes with southwestern sauce and avocado."
+  },
+  {
+    "section": "appetizer",
+    "file": "Tex_Mex_Eggrolls.jpg",
+    "tags": ["appetizer","spicy"],
+    "desc": "Chicken, corn, black beans, peppers, cheese in crispy wrapper."
+  },
+  {
+    "section": "appetizer",
+    "file": "Thai_Chili_Shrimp.jpg",
+    "tags": ["appetizer","seafood","spicy"],
+    "desc": "Crispy shrimp tossed in sweet and spicy Thai chili sauce."
+  },
+  {
+    "section": "appetizer",
+    "file": "Thai_Lettuce_Wraps_with_Avocado.jpg",
+    "tags": ["appetizer","vegan"],
+    "desc": "Full-size version of the small wraps with avocado."
+  },
+  {
+    "section": "appetizer",
+    "file": "Thai_Lettuce_Wraps_with Paradiso.jpg",
+    "tags": ["appetizer"],
+    "desc": "Full-size version with grilled chicken."
+  },
+  {
+    "section": "appetizer",
+    "file": "Warm_Crab_Dip.jpg",
+    "tags": ["appetizer","seafood"],
+    "desc": "Lump crab, cream cheese, artichoke, served warm with bread."
+  }
+]
