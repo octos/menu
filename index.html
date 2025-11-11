@@ -11,23 +11,32 @@
   --accent: #e67e22;
   --sec: #2980b9;
 }
-body {
-  font-family: system-ui, sans-serif;
-  margin: 0;
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100vw;
+  min-width: 100vw;
+  box-sizing: border-box;
   background: var(--bg);
   color: #222;
-  padding: 20px;
+}
+body {
+  font-family: system-ui, sans-serif;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: 100vw;
+  min-width: 100vw;
 }
 h1 {
   text-align: center;
   color: var(--accent);
-  margin: 1.5rem 0 .5rem;
+  margin: 1.5rem 0 .5rem 0;
 }
 .section-title {
   font-size: 1.4rem;
   color: var(--sec);
   text-align: center;
-  margin: 2rem 0 1rem;
+  margin: 2rem 0 1rem 0;
   font-weight: 600;
 }
 .subtitle {
@@ -59,8 +68,8 @@ h1 {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
   gap: 0;
-  max-width: 1400px;
-  margin: auto;
+  max-width: 100vw;
+  margin: 0;
 }
 .item {
   position: relative;
@@ -77,11 +86,6 @@ h1 {
   object-fit: cover;
   transition: filter 0.3s ease;
 }
-/* Blur image on hover/tap */
-.item:hover img,
-.item.tapped img {
-  filter: blur(6px) brightness(0.6);
-}
 /* Name: always visible at bottom with fade */
 .name {
   position: absolute;
@@ -94,26 +98,64 @@ h1 {
   font-size: .95rem;
   line-height: 1.3;
   z-index: 2;
+  pointer-events: none;
 }
-/* Full description overlay on hover/tap */
+/* Overlay box: centered, just behind and beneath the text */
 .overlay {
   position: absolute;
-  inset: 0;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 60%;
+  max-width: 90%;
+  padding: 22px 19px;
+  border-radius: 18px;
+  background: rgba(24,24,24,0.94);
+  color: var(--txt);
+  font-size: 1.05rem;
+  font-weight: 500;
+  text-align: center;
+  pointer-events: none;
+  box-shadow: 0 6px 32px 8px rgba(0,0,0,0.16);
+  opacity: 0;
+  transition: opacity 0.28s;
+  z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
-  padding: 25px;
-  color: var(--txt);
-  background: rgba(0, 0, 0, 0.5);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: 3;
+  white-space: pre-line;
+  overflow-wrap: break-word;
 }
-.item:hover .overlay,
-.item.tapped .overlay {
+.item.show-desc .overlay, 
+.item:hover .overlay {
   opacity: 1;
   pointer-events: auto;
+}
+/* Remove default space on smallest screens */
+@media (max-width:600px) {
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100vw;
+    min-width: 100vw;
+    max-width: 100vw !important;
+    box-sizing: border-box;
+  }
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    max-width: 100vw !important;
+    margin: 0 !important;
+  }
+  #filters, .subtitle, .section-title, h1 {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  .name {
+    font-size: .95rem;
+    padding: 24px 8px 10px;
+  }
 }
 .missing {
   position: absolute;
@@ -124,15 +166,6 @@ h1 {
   color: #aaa;
   font-style: italic;
   background: #111;
-}
-@media(max-width:600px) {
-  .grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  }
-  .name {
-    font-size: .9rem;
-    padding: 24px 10px 10px;
-  }
 }
 </style>
 </head>
@@ -145,7 +178,6 @@ h1 {
 <div class="section-title">Appetizers</div>
 <div id="grid2" class="grid"></div>
 <script>
-// Folders for images
 const IMG_FOLDERS = {
   small: 'i/01_(16)_Small_Plates_and_Snacks/',
   appetizer: 'i/02_(25)_Appetizers/'
@@ -154,12 +186,10 @@ const IMG_FOLDERS = {
 fetch('menu.json')
   .then(r => r.json())
   .then(data => {
-    // --- collect tags ---
     const tagSet = new Set();
     data.forEach(o => o.tags.forEach(t => tagSet.add(t)));
     const tags = Array.from(tagSet).sort();
 
-    // --- build filters ---
     const filtersDiv = document.getElementById('filters');
     tags.forEach(t => {
       const lbl = document.createElement('label');
@@ -171,7 +201,6 @@ fetch('menu.json')
       filtersDiv.appendChild(lbl);
     });
 
-    // ---- render both grids ----
     function render() {
       const excluded = new Set();
       filtersDiv.querySelectorAll('input:checked').forEach(c => excluded.add(c.dataset.tag));
@@ -182,10 +211,10 @@ fetch('menu.json')
         const grid = document.getElementById(gridId);
         grid.innerHTML = '';
         const items = data.filter(o => o.section === section && !o.tags.some(t => excluded.has(t)));
-
-        items.forEach(item => {
+        items.forEach((item, idx) => {
           const div = document.createElement('div');
           div.className = 'item';
+          div.tabIndex = 0;
           const img = new Image();
           img.src = IMG_FOLDERS[section] + item.file;
           img.alt = prettyName(item.file);
@@ -201,30 +230,48 @@ fetch('menu.json')
           name.textContent = prettyName(item.file);
           const overlay = document.createElement('div');
           overlay.className = 'overlay';
-          overlay.innerHTML = `<div><strong>${prettyName(item.file)}</strong><br><br>${item.desc}</div>`;
+          overlay.innerHTML = `<div>${item.desc}</div>`;
           div.appendChild(name);
           div.appendChild(overlay);
           grid.appendChild(div);
         });
       }
-      // mobile tap
+      setupMobileTap();
+    }
+
+    // Only one tapped card at a time, tap toggles overlay on/off
+    function setupMobileTap() {
       if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-        document.querySelectorAll('.item').forEach(el =>
-          el.addEventListener('click', e => {
-            e.preventDefault(); el.classList.toggle('tapped');
-          })
-        );
+        document.querySelectorAll('.item').forEach(el => {
+          el.removeEventListener('click', el._tapHandler, false);
+          el._tapHandler = function(e) {
+            // Remove overlays from all cards except this one
+            document.querySelectorAll('.item.show-desc').forEach(card => {
+              if (card !== el) card.classList.remove('show-desc');
+            });
+            // Toggle this card
+            el.classList.toggle('show-desc');
+          };
+          el.addEventListener('click', el._tapHandler, false);
+        });
+        // Optional: Tap outside cards removes overlays
+        document.addEventListener('touchstart', function(e) {
+          const item = e.target.closest('.item');
+          if (!item) {
+            document.querySelectorAll('.item.show-desc').forEach(card => card.classList.remove('show-desc'));
+          }
+        });
       }
     }
 
-    // smart title case
     function prettyName(fn) {
       const small = /^(and|with|of|the|in|on|at|for|a|an|&)$/i;
       return fn.replace(/\.[^.]+$/, '')
         .replace(/_/g, ' ')
         .split(' ')
         .map((w, i) =>
-          i === 0 || !small.test(w) ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()
+          i === 0 || !small.test(w)
+            ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()
             : w.toLowerCase())
         .join(' ')
         .replace(/&/g, '&');
