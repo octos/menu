@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Restaurant Menu</title>
+<title>Restaurant Menu Gallery</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <style>
 :root {
@@ -37,13 +37,47 @@ h1 {
   font-family: "Georgia", "Times New Roman", serif;
 }
 
-/* Sticky Section Container */
+.subtitle {
+  font-size: .9rem;
+  text-align: center;
+  color: #777;
+  margin: 0.6rem 0 1rem;
+  padding: 0 8px;
+}
+
+/* Filter bar */
+#filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin: 1rem 0;
+  padding: 0 8px;
+  contain: layout style;
+}
+
+#filters label {
+  background: #fff;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: .85rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,.1);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+
+#filters input {
+  margin-right: 5px;
+}
+
+/* SECTION CONTAINER - Critical for sticky stacking */
 .section {
   position: relative;
   contain: layout style;
 }
 
-/* Sticky Header - Fixed */
+/* STICKY HEADER - Works in natural flow */
 .section-title {
   position: sticky;
   top: 0;
@@ -63,43 +97,7 @@ h1 {
   contain: layout style;
 }
 
-.subtitle {
-  font-size: .9rem;
-  text-align: center;
-  color: #777;
-  margin: 0.6rem 0 1rem;
-  padding: 0 8px;
-}
-
-/* Filter bar */
-#filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-  margin: 1rem 0;
-  padding: 0 8px;
-  transition: opacity 0.2s ease;
-  opacity: 1;
-  contain: layout style;
-}
-
-#filters label {
-  background: #fff;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: .85rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,.1);
-  cursor: pointer;
-  user-select: none;
-  white-space: nowrap;
-}
-
-#filters input {
-  margin-right: 5px;
-}
-
-/* Grid - High Performance */
+/* GRID */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
@@ -137,17 +135,18 @@ h1 {
   decoding: async;
 }
 
-.item:hover img {
+.item:hover img,
+.item.show-desc img {
   border-color: #d6c39a;
 }
 
-/* Name */
+/* Name - Top-left badge */
 .name {
   position: absolute;
   top: 5px;
   left: 5px;
   color: var(--txt);
-  background: rgba(145, 100, 50, 0.55);
+  background: rgba(145, 100, 50, 0.7);
   padding: 3px 9px;
   font-weight: 600;
   font-size: 1rem;
@@ -161,35 +160,43 @@ h1 {
   contain: layout;
 }
 
-/* Overlay Description */
+/* SUBTITLE-STYLE DESCRIPTION - Bottom only */
 .overlay {
   position: absolute;
-  inset: 0 0 0 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   color: var(--txt);
-  background: rgba(145, 100, 50, 0.55);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  background: linear-gradient(transparent, rgba(145, 100, 50, 0.7) 30%);
   font-size: 0.95rem;
   font-weight: 500;
   font-family: "Georgia", "Times New Roman", serif;
   text-align: center;
-  padding: 6px 8px;
+  padding: 12px 8px 8px;
   z-index: 2;
   text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
   opacity: 0;
-  transition: opacity 0.25s ease-out;
+  transition: opacity 0.3s ease-out;
+  pointer-events: none;
+  contain: layout;
+  max-height: 50%;
+  overflow: hidden;
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  contain: layout;
 }
 
+/* INSTANT SHOW, FADE OUT ONLY */
 .item:hover .overlay,
 .item.show-desc .overlay {
   opacity: 1;
-  transition: opacity 0.2s ease-in;
+  transition: none !important; /* Instant in */
+}
+
+.item .overlay {
+  transition: opacity 0.3s ease-out;
 }
 
 /* Responsive */
@@ -209,7 +216,7 @@ h1 {
   }
   .overlay {
     font-size: 0.9rem;
-    padding: 5px 7px;
+    padding: 10px 7px 7px;
   }
 }
 
@@ -234,12 +241,12 @@ h1 {
 <div id="filters"></div>
 
 <div class="section">
-  <div class="section-title">Small Plates & Snacks</div>
+  <h2 class="section-title">Small Plates & Snacks</h2>
   <div id="grid1" class="grid" aria-live="polite"></div>
 </div>
 
 <div class="section">
-  <div class="section-title">Appetizers</div>
+  <h2 class="section-title">Appetizers</h2>
   <div id="grid2" class="grid" aria-live="polite"></div>
 </div>
 
@@ -249,7 +256,6 @@ const IMG_FOLDERS = {
   appetizer: 'i/02_(25)_Appetizers/'
 };
 
-// Preload JSON
 let menuData = [];
 let filtersDiv;
 
@@ -268,7 +274,7 @@ function initFilters() {
   const tags = Array.from(tagSet).sort();
 
   filtersDiv = document.getElementById('filters');
-  filtersDiv.innerHTML = ''; // Clear
+  filtersDiv.innerHTML = '';
 
   tags.forEach(tag => {
     const label = document.createElement('label');
@@ -321,16 +327,13 @@ function renderGrid(gridId, section, hiddenTags) {
     overlay.className = 'overlay';
     overlay.textContent = item.desc;
 
-    // Append in order
     div.append(img, name, overlay);
     fragment.appendChild(div);
   });
 
-  // Replace all at once
   grid.replaceChildren(fragment);
 }
 
-// Debounce to prevent rapid filter spam
 function debounce(fn, delay) {
   let timer;
   return (...args) => {
@@ -339,9 +342,13 @@ function debounce(fn, delay) {
   };
 }
 
-// Mobile tap support
 function setupMobileTap() {
   if (!/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) return;
+
+  // Remove old listeners
+  document.querySelectorAll('.item').forEach(el => {
+    el.onclick = null;
+  });
 
   document.querySelectorAll('.item').forEach(el => {
     el.onclick = function(e) {
@@ -352,12 +359,11 @@ function setupMobileTap() {
     };
   });
 
-  // Close on outside tap
   document.addEventListener('click', e => {
     if (!e.target.closest('.item')) {
       document.querySelectorAll('.item.show-desc').forEach(c => c.classList.remove('show-desc'));
     }
-  }, { once: false });
+  });
 }
 
 function capitalize(str) {
