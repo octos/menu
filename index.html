@@ -2,26 +2,32 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Restaurant Menu</title>
+<title>Restaurant Menu Sections</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <style>
 :root {
   --bg: #FEF8EC;
-  --txt: #fff;
   --accent: #e67e22;
   --sec: #7B2E2F;
+  --section1-bg: #fdf3da;
+  --section2-bg: #f9ebd2;
+  --section3-bg: #f7e2ca;
+  --section4-bg: #f3dac2;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html, body {
+html {
+  scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
+}
+
+body {
   margin: 0;
-  width: 100%;
-  overflow-x: hidden;
+  font-family: system-ui, sans-serif;
   background: var(--bg);
   color: #222;
-  font-family: system-ui, sans-serif;
-  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
 }
 
 h1 {
@@ -36,7 +42,6 @@ h1 {
   text-align: center;
   color: #777;
   margin: 0.6rem 0 1rem;
-  padding: 0 8px;
 }
 
 /* Filter bar */
@@ -46,7 +51,6 @@ h1 {
   gap: 10px;
   justify-content: center;
   margin: 1rem 0;
-  padding: 0 8px;
 }
 
 #filters label {
@@ -59,25 +63,44 @@ h1 {
   user-select: none;
 }
 
-.section { position: relative; }
+/* Sticky Scroll-Snap Sections */
+.section {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 1rem 0 3rem;
+  scroll-snap-align: start;
+  border-bottom: 2px solid #e3d2b3;
+  box-sizing: border-box;
+}
+
+.section:nth-of-type(1) { background: var(--section1-bg); }
+.section:nth-of-type(2) { background: var(--section2-bg); }
+.section:nth-of-type(3) { background: var(--section3-bg); }
+.section:nth-of-type(4) { background: var(--section4-bg); }
+
 .section-title {
   position: sticky;
   top: 0;
   z-index: 10;
-  background: var(--bg);
+  background: inherit;
   color: var(--sec);
   text-align: center;
-  margin: 0;
-  padding: 0.6rem 8px 0.5rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  margin: 0 0 1rem;
+  padding: 0.6rem 8px;
+  font-weight: 600;
+  font-family: Georgia, serif;
+  border-bottom: 1px solid #e3d2b3;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
+/* Menu Grid */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-  gap: 7px;
-  margin: 0 auto;
-  padding: 0 7px;
+  gap: 8px;
+  padding: 0 12px;
   content-visibility: auto;
 }
 
@@ -106,7 +129,7 @@ h1 {
   position: absolute;
   top: 5px;
   left: 5px;
-  color: var(--txt);
+  color: white;
   background: rgba(145, 100, 50, 0.7);
   padding: 3px 9px;
   font-weight: 600;
@@ -117,7 +140,7 @@ h1 {
 .overlay {
   position: absolute;
   left: 0; right: 0; bottom: 0;
-  color: var(--txt);
+  color: white;
   background: linear-gradient(transparent, rgba(145, 100, 50, 0.7) 30%);
   padding: 12px 8px 8px;
   opacity: 0;
@@ -143,15 +166,15 @@ h1 {
 <p class="subtitle">Tap or hover for description • Filter by tags</p>
 <div id="filters"></div>
 
-<div class="section">
+<section class="section">
   <h2 class="section-title">Small Plates & Snacks</h2>
   <div id="grid1" class="grid" aria-live="polite"></div>
-</div>
+</section>
 
-<div class="section">
+<section class="section">
   <h2 class="section-title">Appetizers</h2>
   <div id="grid2" class="grid" aria-live="polite"></div>
-</div>
+</section>
 
 <script>
 const IMG_FOLDERS = {
@@ -167,17 +190,14 @@ fetch('menu.json')
     menuData = data;
     initFilters();
     renderAll();
-  })
-  .catch(e => console.error('Failed to load menu.json:', e));
+  });
 
 function initFilters() {
   const tags = [...new Set(menuData.flatMap(i => i.tags))].sort();
   const filtersDiv = document.getElementById('filters');
-
-  filtersDiv.innerHTML = tags.map(t => 
+  filtersDiv.innerHTML = tags.map(t =>
     `<label><input type="checkbox" data-tag="${t}" checked> ${capitalize(t)}</label>`
   ).join('');
-
   filtersDiv.addEventListener('change', debounce(renderAll, 100));
 }
 
@@ -192,16 +212,13 @@ function renderAll() {
 function renderGrid(gridId, section, hiddenTags) {
   const grid = document.getElementById(gridId);
   const items = menuData.filter(i => i.section === section && !i.tags.some(t => hiddenTags.has(t)));
-
-  const html = items.map(i => `
+  grid.innerHTML = items.map(i => `
     <div class="item" tabindex="0">
       <img src="${IMG_FOLDERS[section]}${i.file}" alt="${prettyName(i.file)}" loading="lazy" decoding="async">
       <div class="name">${prettyName(i.file)}</div>
       <div class="overlay">${i.desc}</div>
     </div>
   `).join('');
-
-  grid.innerHTML = html;
 }
 
 const debounce = (fn, delay) => {
