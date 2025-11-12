@@ -29,6 +29,10 @@ color: var(--accent);
 margin: 1.2rem 0 0.3rem 0;
 font-family: "Georgia", "Times New Roman", serif;
 }
+.section {
+position: relative;
+margin-bottom: 1rem;
+}
 .section-title {
 position: sticky;
 top: 0;
@@ -38,7 +42,7 @@ font-size: 1.2rem;
 color: var(--sec);
 text-align: center;
 margin: 0;
-padding: 0.7rem 8px 0.5rem 8px;
+padding: 0.6rem 8px 0.5rem 8px;
 font-weight: 600;
 font-family: "Georgia", "Times New Roman", serif;
 border-bottom: 1px solid #e3d2b3;
@@ -59,13 +63,8 @@ gap: 10px;
 justify-content: center;
 margin: 1rem 0;
 padding: 0 8px;
-will-change: contents;
 transition: opacity 0.2s ease-in-out;
 opacity: 1;
-}
-#filters.updating {
-opacity: 0.3;
-pointer-events: none;
 }
 #filters label {
 background: #fff;
@@ -85,7 +84,7 @@ display: grid;
 grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
 gap: 7px;
 max-width: 100vw;
-margin: 0 auto 0.7rem auto;
+margin: 0 auto;
 padding: 0 7px;
 box-sizing: border-box;
 overflow-wrap: break-word;
@@ -160,14 +159,8 @@ opacity: 0;
 transition: opacity 0.25s ease-out;
 box-sizing: border-box;
 }
-.item:hover .overlay {
-opacity: 1;
-transition: none;
-}
-.item.show-desc:not(:hover) .overlay {
-transition: opacity 0.25s ease-out;
-opacity: 0;
-}
+.item:hover .overlay { opacity: 1; transition: none; }
+.item.show-desc:not(:hover) .overlay { transition: opacity 0.25s ease-out; opacity: 0; }
 /* Responsive adjustments */
 @media (max-width: 600px) {
 .grid {
@@ -182,16 +175,7 @@ top: 4px;
 left: 4px;
 max-width: calc(100% - 10px);
 }
-.overlay {
-font-size: 0.9rem;
-padding: 5px 7px;
-}
-#filters, .subtitle, .section-title, h1 {
-margin-left: 0 !important;
-margin-right: 0 !important;
-padding-left: 0 !important;
-padding-right: 0 !important;
-}
+.overlay { font-size: 0.9rem; padding: 5px 7px; }
 }
 /* Missing image placeholder */
 .missing {
@@ -213,10 +197,17 @@ box-sizing: border-box;
 <h1>Restaurant Menu Gallery</h1>
 <p class="subtitle">Tap or hover for description • Filter by tags</p>
 <div id="filters"></div>
-<div class="section-title">Small Plates & Snacks</div>
-<div id="grid1" class="grid" aria-live="polite" aria-relevant="additions"></div>
-<div class="section-title">Appetizers</div>
-<div id="grid2" class="grid" aria-live="polite" aria-relevant="additions"></div>
+
+<div class="section">
+  <div class="section-title">Small Plates & Snacks</div>
+  <div id="grid1" class="grid" aria-live="polite" aria-relevant="additions"></div>
+</div>
+
+<div class="section">
+  <div class="section-title">Appetizers</div>
+  <div id="grid2" class="grid" aria-live="polite" aria-relevant="additions"></div>
+</div>
+
 <script>
 const IMG_FOLDERS = {
 small: 'i/01_(16)_Small_Plates_and_Snacks/',
