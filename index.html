@@ -89,28 +89,38 @@ top: 0; left: 0;
 width: 100%; height: 100%;
 object-fit: cover;
 user-select: none;
+border: 1px solid #E3D2B3;
+border-radius: 6px;
+transition: border-color 0.2s ease;
+}
+.item:hover img {
+border-color: #d6c39a;
 }
 
-/* Title now anchored firmly at bottom */
+/* Title in upper-left with translucent background */
 .name {
 position: absolute;
-left: 0; right: 0; bottom: 0;
+top: 8px; left: 8px;
 color: var(--txt);
-background: linear-gradient(to top, rgba(0,0,0,0.8), transparent 60%);
-padding: 10px 12px;
+background: rgba(0, 0, 0, 0.55);
+padding: 6px 10px;
 font-weight: 600;
-text-align: center;
-font-size: 1.05rem;
+text-align: left;
+font-size: 1rem;
 line-height: 1.3;
 z-index: 2;
+border-radius: 4px;
 pointer-events: none;
-min-height: 2.5em;
-display: flex;
-align-items: flex-end;
-justify-content: center;
+transition: background 0.2s ease, text-shadow 0.2s ease;
+-webkit-font-smoothing: antialiased;
+text-rendering: optimizeLegibility;
+}
+.item:hover .name {
+background: rgba(0, 0, 0, 0.65);
+text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.9);
 }
 
-/* Overlay reworked: no dark box, only text shadow */
+/* Description remains centered */
 .overlay {
 position: absolute;
 left: 50%;
@@ -124,12 +134,14 @@ font-family: inherit;
 text-align: center;
 pointer-events: none;
 opacity: 0;
-transition: opacity 0.25s ease-out, font-size 0.2s ease;
+transition: opacity 0.18s ease-out;
 z-index: 10;
 text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
 padding: 6px;
 white-space: pre-wrap;
 word-break: break-word;
+-webkit-font-smoothing: antialiased;
+text-rendering: optimizeLegibility;
 }
 
 /* Show overlay on hover/tap */
@@ -143,7 +155,7 @@ transition: none;
 transition: opacity 0.3s ease-out;
 }
 
-/* Responsive scaling and adjustments */
+/* Responsive scaling adjustments */
 @media (max-width: 600px) {
 .grid {
 grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -151,7 +163,7 @@ padding: 0 4px;
 }
 .name {
 font-size: 1rem;
-padding: 8px 10px;
+padding: 5px 8px;
 }
 .overlay {
 font-size: 0.95rem;
