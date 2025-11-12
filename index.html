@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>Restaurant Menu Gallery</title>
+<title>Restaurant Menu</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <style>
 :root {
@@ -10,6 +10,7 @@
   --txt: #fff;
   --accent: #e67e22;
   --sec: #7B2E2F;
+  --border: #e3d2b3;
 }
 
 *, *::before, *::after {
@@ -19,41 +20,45 @@
 html, body {
   margin: 0;
   padding: 0;
-  width: 100vw;
-  min-width: 100vw;
-  max-width: 100vw;
+  width: 100%;
   overflow-x: hidden;
   background: var(--bg);
   color: #222;
   font-family: system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+  scroll-behavior: smooth;
 }
 
 h1 {
   text-align: center;
   color: var(--accent);
   margin: 1.2rem 0 0.3rem;
-  font-family: "Georgia", "Times New Roman", serif;
+  font-family: "Georgia", serif;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 20;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
 }
 
 .subtitle {
-  font-size: .9rem;
   text-align: center;
   color: #777;
   margin: 0.6rem 0 1rem;
   padding: 0 8px;
+  font-size: .9rem;
 }
 
-/* Filter bar */
+/* FILTERS */
 #filters {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
   justify-content: center;
-  margin: 1rem 0;
-  padding: 0 8px;
-  contain: layout style;
+  padding: 0 8px 1rem;
+  margin: 0 auto;
+  max-width: 100vw;
 }
 
 #filters label {
@@ -61,76 +66,69 @@ h1 {
   padding: 6px 12px;
   border-radius: 20px;
   font-size: .85rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,.1);
+  box-shadow: 0 1px 2px rgba(0,0,0,.1);
   cursor: pointer;
   user-select: none;
   white-space: nowrap;
+  transition: transform .1s;
 }
 
-#filters input {
-  margin-right: 5px;
-}
+#filters label:active { transform: scale(0.95); }
 
-/* SECTION CONTAINER - Critical for sticky stacking */
+#filters input { margin-right: 5px; }
+
+/* SECTION - Critical: NO contain, NO overflow */
 .section {
-  position: relative;
-  contain: layout style;
+  padding-top: 1px; /* Prevents margin collapse */
+  margin-bottom: 2rem;
 }
 
-/* STICKY HEADER - Works in natural flow */
+/* STICKY HEADER - Pure, GPU-friendly */
 .section-title {
   position: sticky;
   top: 0;
-  z-index: 10;
   background: var(--bg);
-  font-size: 1.2rem;
   color: var(--sec);
+  font-size: 1.25rem;
+  font-weight: 600;
+  font-family: "Georgia", serif;
   text-align: center;
   margin: 0;
-  padding: 0.6rem 8px 0.5rem;
-  font-weight: 600;
-  font-family: "Georgia", "Times New Roman", serif;
-  border-bottom: 1px solid #e3d2b3;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  contain: layout style;
+  padding: 0.75rem 8px 0.65rem;
+  border-bottom: 1px solid var(--border);
+  z-index: 10;
+  /* NO box-shadow, NO backdrop-filter */
+  line-height: 1.2;
 }
 
 /* GRID */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-  gap: 7px;
-  max-width: 100vw;
-  margin: 0 auto;
-  padding: 0 7px;
-  contain: layout style paint;
+  gap: 8px;
+  padding: 0 8px;
+  contain: layout style;
   content-visibility: auto;
   contain-intrinsic-size: 210px 210px;
 }
 
 .item {
   position: relative;
-  width: 100%;
   aspect-ratio: 1 / 1;
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
-  contain: layout style paint;
-  cursor: pointer;
   background: var(--bg);
+  cursor: pointer;
+  contain: layout style paint;
 }
 
 .item img {
-  position: absolute;
-  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border: 1px solid #E3D2B3;
-  border-radius: 8px;
-  user-select: none;
-  transition: border-color 0.2s ease;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  transition: border-color .2s ease;
   loading: lazy;
   decoding: async;
 }
@@ -140,87 +138,82 @@ h1 {
   border-color: #d6c39a;
 }
 
-/* Name - Top-left badge */
+/* NAME BADGE */
 .name {
   position: absolute;
-  top: 5px;
-  left: 5px;
-  color: var(--txt);
-  background: rgba(145, 100, 50, 0.7);
-  padding: 3px 9px;
+  top: 6px;
+  left: 6px;
+  background: rgba(145, 100, 50, 0.8);
+  color: white;
+  padding: 4px 10px;
   font-weight: 600;
   font-size: 1rem;
-  line-height: 1.3;
-  z-index: 2;
-  border-radius: 4px;
-  pointer-events: none;
-  max-width: calc(100% - 12px);
-  text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
+  border-radius: 6px;
+  max-width: calc(100% - 16px);
   white-space: normal;
-  contain: layout;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+  z-index: 2;
+  pointer-events: none;
+  line-height: 1.3;
 }
 
-/* SUBTITLE-STYLE DESCRIPTION - Bottom only */
+/* SUBTITLE DESCRIPTION - Bottom only, instant in */
 .overlay {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-  color: var(--txt);
-  background: linear-gradient(transparent, rgba(145, 100, 50, 0.7) 30%);
+  padding: 16px 10px 10px;
+  background: linear-gradient(transparent, rgba(145, 100, 50, 0.8) 40%);
+  color: white;
+  font-family: "Georgia", serif;
   font-size: 0.95rem;
   font-weight: 500;
-  font-family: "Georgia", "Times New Roman", serif;
   text-align: center;
-  padding: 12px 8px 8px;
-  z-index: 2;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
   opacity: 0;
-  transition: opacity 0.3s ease-out;
+  transition: opacity 0.35s ease-out;
   pointer-events: none;
-  contain: layout;
-  max-height: 50%;
+  z-index: 2;
+  max-height: 60%;
   overflow: hidden;
   display: flex;
   align-items: flex-end;
   justify-content: center;
 }
 
-/* INSTANT SHOW, FADE OUT ONLY */
+/* INSTANT SHOW */
 .item:hover .overlay,
 .item.show-desc .overlay {
   opacity: 1;
-  transition: none !important; /* Instant in */
-}
-
-.item .overlay {
-  transition: opacity 0.3s ease-out;
+  transition: none;
 }
 
 /* Responsive */
 @media (max-width: 600px) {
   .grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 6px;
-    padding: 0 7px;
+    gap: 7px;
     contain-intrinsic-size: 150px 150px;
   }
   .name {
     font-size: 0.95rem;
-    padding: 3px 7px;
-    top: 4px;
-    left: 4px;
-    max-width: calc(100% - 10px);
+    padding: 3px 8px;
+    top: 5px;
+    left: 5px;
+    border-radius: 5px;
   }
   .overlay {
     font-size: 0.9rem;
-    padding: 10px 7px 7px;
+    padding: 14px 8px 8px;
+  }
+  .section-title {
+    font-size: 1.2rem;
+    padding: 0.7rem 8px 0.6rem;
   }
 }
 
-/* Missing image */
+/* Missing */
 .missing {
   position: absolute;
   inset: 0;
@@ -230,24 +223,25 @@ h1 {
   color: #aaa;
   font-style: italic;
   background: var(--bg);
-  border: 1px solid #E3D2B3;
-  border-radius: 8px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
 }
 </style>
 </head>
 <body>
+
 <h1>Restaurant Menu Gallery</h1>
 <p class="subtitle">Tap or hover for description • Filter by tags</p>
 <div id="filters"></div>
 
 <div class="section">
   <h2 class="section-title">Small Plates & Snacks</h2>
-  <div id="grid1" class="grid" aria-live="polite"></div>
+  <div id="grid1" class="grid"></div>
 </div>
 
 <div class="section">
   <h2 class="section-title">Appetizers</h2>
-  <div id="grid2" class="grid" aria-live="polite"></div>
+  <div id="grid2" class="grid"></div>
 </div>
 
 <script>
@@ -256,129 +250,77 @@ const IMG_FOLDERS = {
   appetizer: 'i/02_(25)_Appetizers/'
 };
 
-let menuData = [];
-let filtersDiv;
+let data = [], filtersDiv;
 
 fetch('menu.json')
   .then(r => r.json())
-  .then(data => {
-    menuData = data;
-    initFilters();
-    renderAll();
-  })
-  .catch(e => console.error('Failed to load menu.json:', e));
+  .then(items => {
+    data = items;
+    buildFilters();
+    render();
+  });
 
-function initFilters() {
-  const tagSet = new Set();
-  menuData.forEach(item => item.tags.forEach(t => tagSet.add(t)));
-  const tags = Array.from(tagSet).sort();
-
+function buildFilters() {
+  const tags = [...new Set(data.flatMap(i => i.tags))].sort();
   filtersDiv = document.getElementById('filters');
-  filtersDiv.innerHTML = '';
-
   tags.forEach(tag => {
-    const label = document.createElement('label');
-    const input = document.createElement('input');
-    input.type = 'checkbox';
-    input.checked = true;
-    input.dataset.tag = tag;
-    input.addEventListener('change', debounce(renderAll, 50));
-    label.appendChild(input);
-    label.appendChild(document.createTextNode(capitalize(tag)));
+    const label = Object.assign(document.createElement('label'), {
+      innerHTML: `<input type="checkbox" checked data-tag="${tag}"> ${tag.charAt(0).toUpperCase() + tag.slice(1)}`
+    });
+    label.querySelector('input').addEventListener('change', debounce(render, 60));
     filtersDiv.appendChild(label);
   });
 }
 
-function renderAll() {
-  const hiddenTags = new Set();
-  filtersDiv.querySelectorAll('input:not(:checked)').forEach(cb => {
-    hiddenTags.add(cb.dataset.tag);
-  });
-
-  renderGrid('grid1', 'small', hiddenTags);
-  renderGrid('grid2', 'appetizer', hiddenTags);
-  setupMobileTap();
+function render() {
+  const hidden = new Set(
+    [...filtersDiv.querySelectorAll('input:not(:checked'))].map(i => i.dataset.tag)
+  );
+  renderGrid('grid1', 'small', hidden);
+  renderGrid('grid2', 'appetizer', hidden);
+  setupTap();
 }
 
-function renderGrid(gridId, section, hiddenTags) {
-  const grid = document.getElementById(gridId);
-  const items = menuData.filter(item =>
-    item.section === section && !item.tags.some(t => hiddenTags.has(t))
-  );
-
-  const fragment = new DocumentFragment();
-
+function renderGrid(id, section, hidden) {
+  const grid = document.getElementById(id);
+  const items = data.filter(i => i.section === section && !i.tags.some(t => hidden.has(t)));
+  const frag = document.createDocumentFragment();
   items.forEach(item => {
     const div = document.createElement('div');
     div.className = 'item';
-    div.tabIndex = 0;
-
-    const img = document.createElement('img');
-    img.alt = prettyName(item.file);
-    img.src = IMG_FOLDERS[section] + item.file;
-    img.loading = 'lazy';
-    img.decoding = 'async';
-
-    const name = document.createElement('div');
-    name.className = 'name';
-    name.textContent = prettyName(item.file);
-
-    const overlay = document.createElement('div');
-    overlay.className = 'overlay';
-    overlay.textContent = item.desc;
-
-    div.append(img, name, overlay);
-    fragment.appendChild(div);
+    div.innerHTML = `
+      <img src="${IMG_FOLDERS[section] + item.file}" alt="${pretty(item.file)}" loading="lazy" decoding="async">
+      <div class="name">${pretty(item.file)}</div>
+      <div class="overlay">${item.desc}</div>
+    `;
+    frag.appendChild(div);
   });
-
-  grid.replaceChildren(fragment);
+  grid.replaceChildren(frag);
 }
 
-function debounce(fn, delay) {
-  let timer;
-  return (...args) => {
-    clearTimeout(timer);
-    timer = setTimeout(() => fn(...args), delay);
+function setupTap() {
+  if (!/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) return;
+  document.querySelectorAll('.item').forEach(el => {
+    el.onclick = e => {
+      e.preventDefault();
+      const active = el.classList.contains('show-desc');
+      document.querySelectorAll('.show-desc').forEach(x => x.classList.remove('show-desc'));
+      if (!active) el.classList.add('show-desc');
+    };
+  });
+}
+
+function debounce(fn, wait) {
+  let t;
+  return () => {
+    clearTimeout(t);
+    t = setTimeout(fn, wait);
   };
 }
 
-function setupMobileTap() {
-  if (!/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) return;
-
-  // Remove old listeners
-  document.querySelectorAll('.item').forEach(el => {
-    el.onclick = null;
-  });
-
-  document.querySelectorAll('.item').forEach(el => {
-    el.onclick = function(e) {
-      e.preventDefault();
-      const wasActive = el.classList.contains('show-desc');
-      document.querySelectorAll('.item.show-desc').forEach(c => c.classList.remove('show-desc'));
-      if (!wasActive) el.classList.add('show-desc');
-    };
-  });
-
-  document.addEventListener('click', e => {
-    if (!e.target.closest('.item')) {
-      document.querySelectorAll('.item.show-desc').forEach(c => c.classList.remove('show-desc'));
-    }
-  });
-}
-
-function capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-function prettyName(fn) {
-  const small = /^(and|with|of|the|in|on|at|for|a|an|&)$/i;
-  return fn.replace(/\.[^.]+$/, '')
-    .replace(/_/g, ' ')
-    .split(' ')
-    .map((w, i) => i === 0 || !small.test(w)
-      ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()
-      : w.toLowerCase())
-    .join(' ')
+function pretty(fn) {
+  return fn.replace(/\.[^.]+$/, '').replace(/_/g, ' ')
+    .replace(/\b\w/g, (l, i) => i === 0 || !/^(and|with|of|the|in|on|at|for|a|an)$/i.test(l) ? l.toUpperCase() : l.toLowerCase())
     .replace(/&/g, '&');
 }
 </script>
